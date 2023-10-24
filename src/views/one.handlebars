@@ -1,0 +1,27 @@
+{{#if product}}
+    <div>
+        <h2>{{product.title}}</h2>
+        <img src="{{product.thumbnails}}" height="200">
+        <p>${{product.price}}</p>
+        <span>Stock: {{product.stock}}</span>
+        <hr>
+        <button class="btn btn-danger" id="delete">Borrar</button>
+    </div>
+{{else}}
+    <p>Producto no encontrado</p>
+{{/if}}
+
+<script>
+    document.querySelector('#delete').onclick = (e) => {
+        const id = "{{ product._id }}"
+
+        fetch(`/products/${id}`, { method: 'DELETE'})
+            .then(() => {
+                document.location.href = '/products'
+                alert('Eliminado con exito')
+            })
+            .catch(e => {
+                alert('No se pudo eliminar')
+            })
+    }
+</script>
