@@ -5,6 +5,7 @@
         <p>${{product.price}}</p>
         <span>Stock: {{product.stock}}</span>
         <hr>
+        <button class="btn btn-primary" id="addToCart">Agregar al Carrito</button>
         <button class="btn btn-danger" id="delete">Borrar</button>
     </div>
 {{else}}
@@ -24,4 +25,34 @@
                 alert('No se pudo eliminar')
             })
     }
+
+    document.querySelector('#addToCart').onclick = () => {
+        const id = "{{ product._id }}"
+        const title = "{{product.title}}"
+        const price = "{{product.price}}"
+        const cantidad = 1;
+
+        const data = { id, title, price, cantidad };
+
+        console.log(data)
+
+        fetch('/cart/agregar-a-lista', {
+            method: 'POST', 
+            headers: {
+            'Content-Type': 'application/json', 
+            },
+            body: JSON.stringify(data),
+        })
+        .then((response) => {
+            if (response.status === 200) {
+                alert('Producto agregado al carrito con éxito');
+        } else {
+                alert('No se pudo agregar el producto a la lista');
+            }
+        })
+        .catch((error) => {
+        console.error('Error en la solicitud de agregar a la lista:', error);
+        alert('Error en la solicitud de agregar a la lista');
+        });
+    };
 </script>

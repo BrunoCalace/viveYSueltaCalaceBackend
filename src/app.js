@@ -1,6 +1,7 @@
 import express from 'express'
 import productsRouter from './router/productsRouter.js'
 import chatRouter from './router/chatRouter.js'
+import cartRouter from './router/cartRouter.js'
 import handlebars from 'express-handlebars'
 import mongoose from 'mongoose'
 import __dirname from './utils.js'
@@ -21,6 +22,8 @@ app.use(express.static( __dirname + '/public'))
 app.get('/health', (req, res) => res.send('ok'))
 app.use('/products', productsRouter)
 app.use('/chat', chatRouter)
+app.use('/cart', cartRouter)
+
 
 mongoose.connect(mongoURL, {dbName: mongoDBName })
     .then(() => {

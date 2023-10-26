@@ -1,5 +1,6 @@
 import fs from "fs";
 const filePath = "./src/data/carts.json";
+
 class CartManager {
   generateCartId() {
     const existingIds = carts.map((cart) => parseInt(cart.id));

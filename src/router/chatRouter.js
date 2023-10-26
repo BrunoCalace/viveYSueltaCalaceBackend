@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import chatModel from '../DAO/models/chatModel.js'
+import chatModel from '../dao/models/chatModel.js'
 
 const router = Router()
 
