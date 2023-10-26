@@ -1,0 +1,14 @@
+<form action="/chat" method="POST">
+    Email: <input type="text" name="user">
+    Mensaje: <input type="text" name="message">
+    <input type="submit" value="Enviar">
+</form>
+
+<div>
+    {{#each messages }}
+        <div>
+            <strong>{{this.user}}</strong>
+            <p>{{this.message}}</p>
+        </div>
+    {{/each}}
+</div>
