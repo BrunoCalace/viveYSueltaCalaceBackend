@@ -1,9 +1,50 @@
-<div>
-    {{#each cart }}
-        <div>
-            <h2>{{this.title}}</h2>
-            <p>${{this.price}}</p>
-            <p>Cantidad: {{this.cantidad}}</p>
-        </div>
-    {{/each}}
+<div class="container">
+    <div class="row">
+        {{#each cart }}
+            <div class="col-md-12 mb-4">
+                <div class="card">
+                    <div class="row no-gutters">
+                        <div class="col-md-4">
+                            <img src="{{this.thumbnails}}" class="card-img" alt="{{this.title}}">
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <h5 class="card-title">{{this.title}}</h5>
+                                <p class="card-text">${{this.price}}</p>
+                                <p class="card-text">Cantidad: {{this.cantidad}}</p>
+                                <button class="btn btn-danger delete-product" id="delete" data-id="{{this._id}}">Eliminar producto</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {{/each}}
+    </div>
 </div>
+
+<script>
+    document.addEventListener("click", function (event) {
+        if (event.target.classList.contains("delete-product")) {
+            event.preventDefault();
+            const productId = event.target.getAttribute("data-id");
+            console.log(productId);
+            if (productId) {
+            fetch(`/cart/${productId}`, {
+                method: "DELETE",
+            })
+                .then((response) => {
+                if (response.status === 200) {
+                    alert("Producto eliminado con éxito");
+                    location.reload();
+                } else {
+                    alert("No se pudo eliminar el producto");
+                }
+                })
+                .catch((error) => {
+                console.error("Error al eliminar el producto:", error);
+                alert("Error al eliminar el producto");
+                });
+            }
+        }
+    });
+</script>

@@ -5,11 +5,51 @@ const router = Router()
 
 router.get('/', async(req, res) => {
     try {
-        const products = await prodModel.find().lean().exec()
-        res.render('list', { products })
-    } catch (error) {
-        res.render('error', {error: 'Error al buscar los productos'})
-    }
+        const limit = parseInt(req.query.limit) || 10
+        const page = parseInt(req.query.page) || 1
+        const query = req.query.query || ''
+    
+        const queryOptions = {}
+        if (query) {
+          queryOptions.category = query
+        }
+
+        let productsQuery = prodModel.find(queryOptions)
+    
+        if (req.query.sort && (req.query.sort === 'asc' || req.query.sort === 'desc')) {
+            const sort = req.query.sort === 'desc' ? -1 : 1;
+            productsQuery = productsQuery.sort({ price: sort });
+          }
+
+        const products = await productsQuery
+          .skip((page - 1) * limit)
+          .limit(limit)
+          .lean()
+          .exec();
+        
+        const totalProducts = await prodModel.countDocuments(queryOptions);
+        const totalPages = Math.ceil(totalProducts / limit);
+        const hasPrevPage = page > 1;
+        const hasNextPage = page < totalPages;
+      
+        const prevLink = hasPrevPage ? `/products?page=${page - 1}` : null;
+        const nextLink = hasNextPage ? `/products?page=${page + 1}` : null;
+        
+        res.render('list', {
+            status: 'success',
+            products,
+            totalPages,
+            prevPage: hasPrevPage ? page - 1 : null,
+            nextPage: hasNextPage ? page + 1 : null,
+            page,
+            hasPrevPage,
+            hasNextPage,
+            prevLink,
+            nextLink,
+        });
+      } catch (error) {
+        res.render('error', { error: 'Error al buscar los productos' });
+      }
 })
 
 router.get('/create', async(req, res) => {

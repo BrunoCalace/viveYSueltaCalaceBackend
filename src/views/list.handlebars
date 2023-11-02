@@ -1,11 +1,86 @@
-<div>
+<div class="d-flex">
+    <form action="/products" method="GET" class="mb-2">
+        <input type="hidden" name="sort" value="asc">
+        <button type="submit" class="btn btn-light">Ordenar Ascendente</button>
+    </form>
+
+    <form action="/products" method="GET">
+        <input type="hidden" name="sort" value="desc">
+        <button type="submit" class="btn btn-light">Ordenar Descendente</button>
+    </form>
+</div>
+
+<div class="d-flex flex-wrap flex-row justify-content-between">
     {{#each products }}
-        <div>
-            <a href="/products/{{this.title}}">
-                <h2>{{this.title}}</h2>
-                <img src="{{this.thumbnails}}" height="150">
-                <p>${{this.price}}</p>
-            </a>
+        <div class="card" style="width: 18rem;">
+            <img src="{{this.thumbnails}}" class="card-img-top" alt="{{this.title}}">
+            <div class="card-body d-flex flex-column align-items-center">
+                <h5 class="card-title">{{this.title}}</h5>
+                <p class="card-text">${{this.price}}</p>
+                <a href="/products/{{this.title}}" class="btn btn-primary">Ver detalles</a>
+                <button class="btn btn-success addToCartButton" data-id="{{this._id}}" data-title="{{this.title}}" data-price="{{this.price}}" data-thumbnails="{{this.thumbnails}}">Agregar al carrito</button>
+            </div>
         </div>
     {{/each}}
 </div>
+
+<div class="text-center">
+    <nav aria-label="Page navigation" class="d-flex justify-content-center">
+        <ul class="pagination">
+            {{#if hasPrevPage}}
+                <li class="page-item">
+                    <a class="page-link" href="{{prevLink}}" aria-label="Página anterior">
+                        <span aria-hidden="true">&lt;</span>
+                    </a>
+                </li>
+            {{/if}}
+            <li class="page-item disabled">
+                <span class="page-link">Página {{page}} de {{totalPages}}</span>
+            </li>
+            {{#if hasNextPage}}
+                <li class="page-item">
+                    <a class="page-link" href="{{nextLink}}" aria-label="Página siguiente">
+                        <span aria-hidden="true">&gt;</span>
+                    </a>
+                </li>
+            {{/if}}
+        </ul>
+    </nav>
+</div>
+
+<script>
+    const addToCartButtons = document.querySelectorAll('.btn-success');
+
+    addToCartButtons.forEach((button) => {
+        button.addEventListener('click', () => {
+            const id = button.getAttribute("data-id");
+            const title = button.getAttribute("data-title");
+            const price = button.getAttribute("data-price");
+            const cantidad = 1;
+            const thumbnails = button.getAttribute("data-thumbnails");
+
+            const data = { id, title, price, cantidad, thumbnails };
+
+            console.log(data);
+
+            fetch('/cart/agregar-a-lista', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            })
+            .then((response) => {
+                if (response.status === 200) {
+                    alert('Producto agregado al carrito con éxito');
+                } else {
+                    alert('No se pudo agregar el producto a la lista');
+                }
+            })
+            .catch((error) => {
+                console.error('Error en la solicitud de agregar a la lista:', error);
+                alert('Error en la solicitud de agregar a la lista');
+            });
+        });
+    });
+</script>

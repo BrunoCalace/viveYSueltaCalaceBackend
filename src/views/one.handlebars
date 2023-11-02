@@ -1,12 +1,18 @@
 {{#if product}}
-    <div>
-        <h2>{{product.title}}</h2>
-        <img src="{{product.thumbnails}}" height="200">
-        <p>${{product.price}}</p>
-        <span>Stock: {{product.stock}}</span>
-        <hr>
-        <button class="btn btn-primary" id="addToCart">Agregar al Carrito</button>
-        <button class="btn btn-danger" id="delete">Borrar</button>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6">
+                <img src="{{product.thumbnails}}" class="img-fluid" alt="{{product.title}}">
+            </div>
+            <div class="col-lg-6">
+                <h2>{{product.title}}</h2>
+                <p class="text-primary">${{product.price}}</p>
+                <p>Stock: {{product.stock}}</p>
+                <hr>
+                <button class="btn btn-primary" id="addToCart">Agregar al Carrito</button>
+                <button class="btn btn-danger" id="delete">Borrar</button>
+            </div>
+        </div>
     </div>
 {{else}}
     <p>Producto no encontrado</p>
@@ -27,14 +33,13 @@
     }
 
     document.querySelector('#addToCart').onclick = () => {
-        const id = "{{ product._id }}"
-        const title = "{{product.title}}"
-        const price = "{{product.price}}"
+        const id = "{{ product._id }}";
+        const title = "{{ product.title }}";
+        const price = "{{ product.price }}";
         const cantidad = 1;
+        const thumbnails = "{{ product.thumbnails }}"
 
-        const data = { id, title, price, cantidad };
-
-        console.log(data)
+        const data = { id, title, price, cantidad, thumbnails };
 
         fetch('/cart/agregar-a-lista', {
             method: 'POST', 
