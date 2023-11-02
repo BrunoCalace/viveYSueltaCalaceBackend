@@ -14,14 +14,21 @@ router.get('/', async (req, res) => {
 
 router.post('/agregar-a-lista', async (req, res) => {
   try {
-    const productData = req.body;
+    const { id, title, price, cantidad } = req.body;
 
-    const result = await cartModel.create(productData);
+    const cart = await cartModel.findOne({ id });
 
-    console.log({ result });
+    if (!cart) {
+      const newCart = new cartModel({ id, title, price, cantidad });
+      await newCart.save();
+    } else {
+      cart.cantidad += cantidad;
+      await cart.save();
+    }
 
     res.redirect('/cart');
   } catch (error) {
+    console.error(error);
     res.render('error', { error: 'Error al agregar el producto a la lista' });
   }
 });
