@@ -9,7 +9,7 @@
                 <p class="text-primary">${{product.price}}</p>
                 <p>Stock: {{product.stock}}</p>
                 <hr>
-                <button class="btn btn-primary" id="addToCart">Agregar al Carrito</button>
+                <button class="btn btn-success" id="addToCart">Agregar al Carrito</button>
                 <button class="btn btn-danger" id="delete">Borrar</button>
             </div>
         </div>
@@ -22,7 +22,7 @@
     document.querySelector('#delete').onclick = (e) => {
         const id = "{{ product._id }}"
 
-        fetch(`/products/${id}`, { method: 'DELETE'})
+        fetch(`/api/products/${id}`, { method: 'DELETE'})
             .then(() => {
                 document.location.href = '/products'
                 alert('Eliminado con exito')
@@ -41,7 +41,7 @@
 
         const data = { id, title, price, cantidad, thumbnails };
 
-        fetch('/cart/agregar-a-lista', {
+        fetch('/api/cart/agregar-a-lista', {
             method: 'POST', 
             headers: {
             'Content-Type': 'application/json', 

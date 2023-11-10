@@ -1,9 +1,12 @@
 import { Router } from "express"
-import prodModel from '../dao/models/prodModels.js'
+import prodModel from '../models/prodModels.js'
+import cartModel from '../models/cartModel.js'
+import chatModel from '../models/chatModel.js'
 
 const router = Router()
 
-router.get('/', async(req, res) => {
+//PRODUCTS
+router.get('/products', async(req, res) => {
     try {
         const limit = parseInt(req.query.limit) || 10
         const page = parseInt(req.query.page) || 1
@@ -52,11 +55,11 @@ router.get('/', async(req, res) => {
       }
 })
 
-router.get('/create', async(req, res) => {
+router.get('/products/create', async(req, res) => {
     res.render('create', {})
 })
 
-router.get('/:name', async(req, res) => {
+router.get('/products/:name', async(req, res) => {
     try {
         const title = req.params.name
         const product = await prodModel.findOne({ title }).lean().exec()
@@ -68,29 +71,24 @@ router.get('/:name', async(req, res) => {
     
 })
 
-router.post('/', async(req, res) => {
-    try{
-        const prodNew = req.body
-
-        const result = await prodModel.create(prodNew)
-        console.log({result})
-
-        res.redirect('/products')
-    } catch(error) {
-        res.render('error', {error: 'Error al crear el producto'})
+//CART
+router.get('/cart', async (req, res) => {
+    try {
+        const cart = await cartModel.find().lean().exec()
+        res.render('cartList', { cart })
+    } catch (error) {
+        res.render('error', {error: 'Error al buscar los productos'})
     }
-    
 })
 
-router.delete('/:id', async (req, res) => {
+//CHAT
+router.get('/chat', async(req, res) => {
     try {
-        const id = req.params.id
-        await prodModel.deleteOne( { _id: id })
-
-        return res.json({ status:'success' })
-   } catch (error) {
-        res.status(500).json(error)
-   }
+        const messages = await chatModel.find().lean().exec()
+        res.render('chat', { messages })
+    } catch (error) {
+        res.render('error', {error: 'Error al buscar los mensajes'})
+    }
 })
 
 export default router

@@ -1,11 +1,8 @@
 import express from 'express'
 import http from 'http'
 import { Server as SocketIOServer } from 'socket.io'
-import prodRouter from './router/prodRouter.js'
-import carritoRouter from './router/carritoRouter.js'
-import productsRouter from './router/productsRouter.js'
-import chatRouter from './router/chatRouter.js'
-import cartRouter from './router/cartRouter.js'
+import viewsRouter from './router/viewsRouter.js'
+import apiRouter from './router/apiRouter.js'
 import handlebars from 'express-handlebars'
 import mongoose from 'mongoose'
 import __dirname from './utils.js'
@@ -24,7 +21,7 @@ io.on('connection', (socket) => {
     socket.on('disconnect', () => {
       console.log(`Cliente desconectado: ${socket.id}`);
     });
-  });
+});
 
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
@@ -35,13 +32,9 @@ app.set('view engine', 'handlebars')
 
 app.use(express.static( __dirname + '/public'))
 
-app.use("/api/products", prodRouter)
-app.use("/api/carts", carritoRouter)
-
 app.get('/health', (req, res) => res.send('ok'))
-app.use('/products', productsRouter)
-app.use('/chat', chatRouter)
-app.use('/cart', cartRouter)
+app.use('/', viewsRouter)
+app.use('/api', apiRouter)
 
 const PORT = process.env.PORT || 7500;
 server.listen(PORT, () => {

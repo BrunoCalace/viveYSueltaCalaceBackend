@@ -29,10 +29,10 @@
             const productId = event.target.getAttribute("data-id");
             console.log(productId);
             if (productId) {
-            fetch(`/cart/${productId}`, {
+            fetch(`api/cart/${productId}`, {
                 method: "DELETE",
             })
-                .then((response) => {
+            .then((response) => {
                 if (response.status === 200) {
                     alert("Producto eliminado con éxito");
                     location.reload();
@@ -41,8 +41,8 @@
                 }
                 })
                 .catch((error) => {
-                console.error("Error al eliminar el producto:", error);
-                alert("Error al eliminar el producto");
+                    console.error("Error al eliminar el producto:", error);
+                    alert("Error al eliminar el producto");
                 });
             }
         }
