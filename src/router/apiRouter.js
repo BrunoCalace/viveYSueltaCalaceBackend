@@ -33,40 +33,71 @@ router.delete('/products/:id', async (req, res) => {
 
 //CART
 router.post('/cart/agregar-a-lista', async (req, res) => {
-    try {
-      const { id, title, price, cantidad, thumbnails } = req.body;
-  
-      const cart = await cartModel.findOne({ id });
-  
-      if (!cart) {
-        const newCart = new cartModel({ id, title, price, cantidad, thumbnails });
-        await newCart.save();
+  try {
+    const { id, cantidad } = req.body;
+
+    const cart = await cartModel.findOne();
+
+    if (!cart) {
+      const newCart = new cartModel({
+        products: [{ productId: id, cantidad }],
+      });
+      await newCart.save();
+    } else {
+      const existingProductIndex = cart.products.findIndex(product => product.productId.equals(id));
+
+      if (existingProductIndex !== -1) {
+        cart.products[existingProductIndex].cantidad += cantidad;
       } else {
-        cart.cantidad += cantidad;
-        await cart.save();
+        cart.products.push({ productId: id, cantidad });
       }
-  
-      res.redirect('/cart');
-    } catch (error) {
-      console.error(error);
-      res.render('error', { error: 'Error al agregar el producto a la lista' });
+
+      await cart.save();
     }
+
+    res.redirect('/cart');
+  } catch (error) {
+    console.error(error);
+    res.render('error', { error: 'Error al agregar el producto a la lista' });
+  }
 });
   
-router.delete('/cart/:id', async (req, res) => {
+router.delete('/cart/:cid', async (req, res) => {
     try {
-      const id = req.params.id;
-      const result = await cartModel.deleteOne({ _id: id });
-  
+      const cartId = req.params.cid;
+
+      const result = await cartModel.deleteOne({ _id: cartId });
+
       if (result.deletedCount === 1) {
-        res.json({ status: 'success', message: 'Producto eliminado del carrito' });
+        res.json({ status: 'success', message: 'Carrito eliminado correctamente' });
       } else {
-        res.status(404).json({ status: 'error', message: 'Producto no encontrado en el carrito' });
+        res.status(404).json({ status: 'error', message: 'Carrito no encontrado' });
       }
     } catch (error) {
       console.error(error);
-      res.status(500).json({ status: 'error', error: 'Error al eliminar el producto del carrito' });
+      res.status(500).json({ status: 'error', error: 'Error al eliminar el carrito' });
     }
+});
+
+router.delete('/cart/:cid/products/:pid', async (req, res) => {
+  try {
+    const cartId = req.params.cid;
+    const productId = req.params.pid;
+
+    const result = await cartModel.updateOne(
+        { _id: cartId },
+        { $pull: { products: { productId } } }
+    );
+
+    if (result.nModified === 1) {
+        res.json({ status: 'success', message: 'Producto eliminado del carrito' });
+    } else {
+        res.status(404).json({ status: 'error', message: 'Producto no encontrado en el carrito' });
+    }
+} catch (error) {
+    console.error(error);
+    res.status(500).json({ status: 'error', error: 'Error al eliminar el producto del carrito' });
+}
 });
 
 //CHAT

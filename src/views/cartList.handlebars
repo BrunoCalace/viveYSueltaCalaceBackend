@@ -12,7 +12,7 @@
                                 <h5 class="card-title">{{this.title}}</h5>
                                 <p class="card-text">${{this.price}}</p>
                                 <p class="card-text">Cantidad: {{this.cantidad}}</p>
-                                <button class="btn btn-danger delete-product" id="delete" data-id="{{this._id}}">Eliminar producto</button>
+                                <button class="btn btn-danger delete-product" data-product-id="{{this._id}}">Eliminar producto</button>
                             </div>
                         </div>
                     </div>
@@ -20,29 +20,67 @@
             </div>
         {{/each}}
     </div>
+    <div id="cartId" data-cart-id="{{ cartId }}"></div>
+    <button class="btn btn-danger delete-cart" data-cart-id="{{ cartId }}">Vaciar carrito</button>
 </div>
 
 <script>
-    document.addEventListener("click", function (event) {
-        if (event.target.classList.contains("delete-product")) {
+    document.addEventListener("DOMContentLoaded", function () {
+        
+        const cartIdElement = document.getElementById("cartId");
+        const cartId = cartIdElement ? cartIdElement.dataset.cartId : null;
+
+        document.addEventListener("click", function (event) {
+            if (event.target.classList.contains("delete-product")) {
+                handleDeleteProduct(event);
+            } else if (event.target.classList.contains("delete-cart")) {
+                handleDeleteCart();
+            }
+        });
+
+        function handleDeleteProduct(event) {
             event.preventDefault();
-            const productId = event.target.getAttribute("data-id");
-            console.log(productId);
-            if (productId) {
-            fetch(`api/cart/${productId}`, {
-                method: "DELETE",
-            })
-            .then((response) => {
-                if (response.status === 200) {
-                    alert("Producto eliminado con éxito");
-                    location.reload();
-                } else {
-                    alert("No se pudo eliminar el producto");
-                }
+            const productId = event.target.getAttribute("data-product-id");
+            console.log("Deleting product. Product ID:", productId, "Cart ID:", cartId);
+
+            if (productId && cartId) {
+                fetch(`api/cart/${cartId}/products/${productId}`, {
+                    method: "DELETE",
+                })
+                .then((response) => {
+                    if (response.status === 200) {
+                        alert("Producto eliminado con éxito");
+                        location.reload();
+                    } else {
+                        alert("No se pudo eliminar el producto");
+                    }
                 })
                 .catch((error) => {
                     console.error("Error al eliminar el producto:", error);
                     alert("Error al eliminar el producto");
+                });
+            }
+        }
+
+        function handleDeleteCart() {
+            const cartId = event.target.getAttribute("data-cart-id");
+            console.log("Deleting cart. Cart ID:", cartId);
+
+            if (cartId) {
+                fetch(`api/cart/${cartId}`, {
+                    method: "DELETE",
+                })
+                .then((response) => {
+                    if (response.status === 200) {
+                        alert("Carrito vaciado con éxito");
+                        location.reload();
+                    } else {
+                        alert("No se pudo vaciar el carrito");
+                    }
+                })
+                .catch((error) => {
+                    console.error("Error al vaciar el carrito:", error);
+                    alert("Error al vaciar el carrito");
                 });
             }
         }

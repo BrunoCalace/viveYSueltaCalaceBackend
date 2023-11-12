@@ -73,13 +73,27 @@ router.get('/products/:name', async(req, res) => {
 
 //CART
 router.get('/cart', async (req, res) => {
-    try {
-        const cart = await cartModel.find().lean().exec()
-        res.render('cartList', { cart })
-    } catch (error) {
-        res.render('error', {error: 'Error al buscar los productos'})
-    }
-})
+  try {
+      const cart = await cartModel.findOne().lean().exec();
+      
+      if (!cart) {
+          res.locals.cartId = null;
+          return res.render('cartList', { cart: [] });
+      }
+
+      const products = await Promise.all(cart.products.map(async (productInCart) => {
+          const productDetails = await prodModel.findById(productInCart.productId).lean().exec()
+          return {
+              ...productInCart,
+              ...productDetails
+          };
+      }));
+
+      res.render('cartList', { cartId: cart._id, cart: products });
+  } catch (error) {
+      res.render('error', { error: 'Error al buscar los productos en el carrito' });
+  }
+});
 
 //CHAT
 router.get('/chat', async(req, res) => {
