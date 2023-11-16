@@ -1,0 +1,13 @@
+<div class="container mt-4">
+    <h1>Perfil de Usuario</h1>
+    <ul>
+        <li><strong>ID:</strong> {{ user._id }}</li>
+        <li><strong>Nombre:</strong> {{ user.first_name }} {{ user.last_name}}</li>
+        <li><strong>Correo Electrónico:</strong> {{ user.email }}</li>
+        <li><strong>Rol:</strong> {{ user.role }}</li>
+    </ul>
+    <form action="/api/logout" method="get">
+        <button class="btn btn-danger" type="submit">Logout</button>
+    </form>
+</div>
+

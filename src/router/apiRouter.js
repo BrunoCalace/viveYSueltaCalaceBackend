@@ -2,6 +2,7 @@ import { Router } from "express"
 import prodModel from '../models/prodModels.js'
 import cartModel from '../models/cartModel.js'
 import chatModel from '../models/chatModel.js'
+import sessionsController from '../classes/sessionsManager.js'
 
 const router = Router()
 
@@ -89,7 +90,7 @@ router.delete('/cart/:cid/products/:pid', async (req, res) => {
         { $pull: { products: { productId } } }
     );
 
-    if (result.nModified === 1) {
+    if (result) {
         res.json({ status: 'success', message: 'Producto eliminado del carrito' });
     } else {
         res.status(404).json({ status: 'error', message: 'Producto no encontrado en el carrito' });
@@ -106,12 +107,16 @@ router.post('/chat', async(req, res) => {
         const chatNew = req.body
 
         const result = await chatModel.create(chatNew)
-        console.log({result})
 
         res.redirect('/chat')
     } catch(error) {
         res.render('error', {error: 'Error al enviar el mensaje'})
     }
 })
+
+//SESSIONS
+router.post('/signup', sessionsController.signup)
+router.post('/login', sessionsController.login)
+router.get('/logout', sessionsController.logout)
 
 export default router

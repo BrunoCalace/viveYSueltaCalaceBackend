@@ -1,12 +1,34 @@
 import { Router } from "express"
+import { isAdmin, isNotAuthenticated, isAuthenticated } from '../classes/authMiddleware.js'
 import prodModel from '../models/prodModels.js'
 import cartModel from '../models/cartModel.js'
 import chatModel from '../models/chatModel.js'
+import userModel from '../models/userModel.js'
 
 const router = Router()
 
+router.get('/', isNotAuthenticated, async(req, res) => {
+    try {
+        if (req.session.userId) {
+            res.redirect('/profile');
+          } else {
+            res.render('login');
+          }
+    } catch (error) {
+        res.render('error', { error: 'Error al cargar la página' })
+    }
+})
+
+router.get('/signup', isNotAuthenticated,  async(req, res) => {
+    try {
+        res.render('signup')
+    } catch (error) {
+        res.render('error', { error: 'Error al cargar la página' })
+    }
+})
+
 //PRODUCTS
-router.get('/products', async(req, res) => {
+router.get('/products', isAuthenticated, async(req, res) => {
     try {
         const limit = parseInt(req.query.limit) || 10
         const page = parseInt(req.query.page) || 1
@@ -38,6 +60,9 @@ router.get('/products', async(req, res) => {
         const prevLink = hasPrevPage ? `/products?page=${page - 1}` : null;
         const nextLink = hasNextPage ? `/products?page=${page + 1}` : null;
         
+        const userId = req.session.userId;
+        const user = await userModel.findById(userId).lean().exec();
+
         res.render('list', {
             status: 'success',
             products,
@@ -49,13 +74,16 @@ router.get('/products', async(req, res) => {
             hasNextPage,
             prevLink,
             nextLink,
+            user: {
+                fullName: `${user.first_name} ${user.last_name}`,
+            },
         });
       } catch (error) {
         res.render('error', { error: 'Error al buscar los productos' });
       }
 })
 
-router.get('/products/create', async(req, res) => {
+router.get('/products/create', isAdmin, async(req, res) => {
     res.render('create', {})
 })
 
@@ -72,7 +100,7 @@ router.get('/products/:name', async(req, res) => {
 })
 
 //CART
-router.get('/cart', async (req, res) => {
+router.get('/cart', isAuthenticated, async (req, res) => {
   try {
       const cart = await cartModel.findOne().lean().exec();
       
@@ -96,7 +124,7 @@ router.get('/cart', async (req, res) => {
 });
 
 //CHAT
-router.get('/chat', async(req, res) => {
+router.get('/chat', isAuthenticated, async(req, res) => {
     try {
         const messages = await chatModel.find().lean().exec()
         res.render('chat', { messages })
@@ -104,5 +132,23 @@ router.get('/chat', async(req, res) => {
         res.render('error', {error: 'Error al buscar los mensajes'})
     }
 })
+
+//PROFILE
+router.get('/profile', isAuthenticated, async (req, res) => {
+    try {
+        const userId = req.session.userId;
+    
+        const user = await userModel.findById(userId).lean().exec()
+    
+        if (!user) {
+          return res.render('error', { error: 'Usuario no encontrado' });
+        }
+    
+        res.render('profile', { user });
+    }catch (error) {
+        console.error('Error al obtener datos del usuario:', error);
+        res.render('error', { error: 'Error al obtener datos del usuario' });
+    }
+});
 
 export default router
