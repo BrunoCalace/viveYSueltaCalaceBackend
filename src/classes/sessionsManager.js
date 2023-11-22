@@ -1,5 +1,7 @@
 import userModel from '../models/userModel.js'
 import bcrypt from 'bcrypt'
+import __dirname from '../utils.js'
+import { generateAccessToken } from '../config/passport.js'
 
 class SessionsController {
     static async signup(req, res) {
@@ -26,7 +28,6 @@ class SessionsController {
     static async login(req, res) {
         try {
             const { email, password } = req.body;
-    
             const user = await userModel.findOne({ email });
     
             if (!user) {
@@ -41,10 +42,11 @@ class SessionsController {
     
             req.session.userId = user._id;
             req.session.userRole = user.role;
+
             return res.redirect('/products');
         } catch (error) {
             console.error('Error al iniciar sesión:', error);
-            res.render('error', { error: 'Error al iniciar sesión' });
+            res.status(500).json({ error: 'Error al iniciar sesión' });
         }
     }
 

@@ -1,4 +1,5 @@
 import { Router } from "express"
+import passport from '../config/passport.js'
 import prodModel from '../models/prodModels.js'
 import cartModel from '../models/cartModel.js'
 import chatModel from '../models/chatModel.js'
@@ -116,7 +117,15 @@ router.post('/chat', async(req, res) => {
 
 //SESSIONS
 router.post('/signup', sessionsController.signup)
-router.post('/login', sessionsController.login)
+router.post('/login', passport.authenticate('local'),  sessionsController.login)
 router.get('/logout', sessionsController.logout)
+
+//CALLBACK
+router.get('/sessions/githubcallback',
+  passport.authenticate('github', { failureRedirect: '/', failureFlash: true }),
+  (req, res) => {
+    res.redirect('/products');
+  }
+)
 
 export default router
