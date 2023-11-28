@@ -1,4 +1,5 @@
 import userModel from '../models/userModel.js'
+import cartModel from '../models/cartModel.js'
 import bcrypt from 'bcrypt'
 import __dirname from '../utils.js'
 import { generateAccessToken } from '../config/passport.js'
@@ -39,10 +40,20 @@ class SessionsController {
             if (!passwordMatch) {
                 return res.redirect('/');
             }
-    
+
             req.session.userId = user._id;
             req.session.userRole = user.role;
 
+            let userCart = await cartModel.findOne({ user: user._id });
+            if (!userCart) {
+                userCart = await cartModel.create({
+                  user: user._id,
+                  products: [],
+                });
+            }
+            
+            user.cart = userCart._id;
+            await user.save();
             return res.redirect('/products');
         } catch (error) {
             console.error('Error al iniciar sesión:', error);

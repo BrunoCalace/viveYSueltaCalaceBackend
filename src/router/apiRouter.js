@@ -38,10 +38,12 @@ router.post('/cart/agregar-a-lista', async (req, res) => {
   try {
     const { id, cantidad } = req.body;
 
-    const cart = await cartModel.findOne();
+    const currentUser = req.user
+    const cart = await cartModel.findOne({ user: currentUser._id });
 
     if (!cart) {
       const newCart = new cartModel({
+        user: currentUser._id,
         products: [{ productId: id, cantidad }],
       });
       await newCart.save();
@@ -121,8 +123,7 @@ router.post('/login', passport.authenticate('local'),  sessionsController.login)
 router.get('/logout', sessionsController.logout)
 
 //CALLBACK
-router.get('/sessions/githubcallback',
-  passport.authenticate('github', { failureRedirect: '/', failureFlash: true }),
+router.get('/sessions/githubcallback', passport.authenticate('github', { failureRedirect: '/', failureFlash: true }),
   (req, res) => {
     res.redirect('/products');
   }

@@ -9,15 +9,17 @@ import apiRouter from './router/apiRouter.js'
 import handlebars from 'express-handlebars'
 import mongoose from 'mongoose'
 import __dirname from './utils.js'
+import { randomBytes } from 'crypto'
 
 const app = express()
 const server = http.createServer(app)
 const io = new SocketIOServer(server)
 const mongoURL = 'mongodb+srv://brunocalace:QT2q9bemAvh5n658@clustercalace.yrqgvm7.mongodb.net/'
 const mongoDBName = 'ecommerce'
+const secureKey = randomBytes(64).toString('hex')
 
 app.use(session({
-  secret: 'tu_secreto',
+  secret: secureKey,
   resave: false,
   saveUninitialized: true,
 }))
@@ -52,3 +54,5 @@ server.listen(PORT, () => {
           console.error('Error connect DB')
       });
 });
+
+export default secureKey;

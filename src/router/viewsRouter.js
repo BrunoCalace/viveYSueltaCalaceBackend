@@ -101,26 +101,30 @@ router.get('/products/:name', async(req, res) => {
 
 //CART
 router.get('/cart', isAuthenticated, async (req, res) => {
-  try {
-      const cart = await cartModel.findOne().lean().exec();
-      
-      if (!cart) {
-          res.locals.cartId = null;
-          return res.render('cartList', { cart: [] });
-      }
+    try {
+        const user = req.user;
+        if (!user || !user.cart) {
+            return res.render('cartList', { cart: [] });
+        }
+        
+        const cart = await cartModel.findById(user.cart).lean().exec();
+        
+        if (!cart) {
+            return res.render('cartList', { cart: [] });
+        }
 
-      const products = await Promise.all(cart.products.map(async (productInCart) => {
-          const productDetails = await prodModel.findById(productInCart.productId).lean().exec()
-          return {
-              ...productInCart,
-              ...productDetails
-          };
-      }));
+        const products = await Promise.all(cart.products.map(async (productInCart) => {
+            const productDetails = await prodModel.findById(productInCart.productId).lean().exec()
+            return {
+                ...productInCart,
+                ...productDetails
+            };
+        }));
 
-      res.render('cartList', { cartId: cart._id, cart: products });
-  } catch (error) {
+        res.render('cartList', { cartId: user.cart, cart: products });
+    } catch (error) {
       res.render('error', { error: 'Error al buscar los productos en el carrito' });
-  }
+    }
 });
 
 //CHAT
