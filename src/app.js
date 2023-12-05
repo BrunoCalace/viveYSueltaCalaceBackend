@@ -2,10 +2,10 @@ import express from 'express'
 import session from 'express-session'
 import flash from 'express-flash';
 import http from 'http'
-import passport from './config/passport.js'
+import passport from './Routing/Router/passport.js'
 import { Server as SocketIOServer } from 'socket.io'
-import viewsRouter from './router/viewsRouter.js'
-import apiRouter from './router/apiRouter.js'
+import viewsRouter from './Routing/Router/viewsRouter.js'
+import apiRouter from './Routing/Router/apiRouter.js'
 import handlebars from 'express-handlebars'
 import mongoose from 'mongoose'
 import __dirname from './utils.js'
@@ -35,7 +35,7 @@ app.use(express.urlencoded({extended: true}))
 app.use(express.static(__dirname + '/public'))
 
 app.engine('handlebars', handlebars.engine())
-app.set('views', __dirname + '/views')
+app.set('views', __dirname + '/Routing/views')
 app.set('view engine', 'handlebars')
 
 app.get('/health', (req, res) => res.send('ok'))

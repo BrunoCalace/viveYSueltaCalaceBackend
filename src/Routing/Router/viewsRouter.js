@@ -1,9 +1,9 @@
 import { Router } from "express"
-import { isAdmin, isNotAuthenticated, isAuthenticated } from '../classes/authMiddleware.js'
-import prodModel from '../models/prodModels.js'
-import cartModel from '../models/cartModel.js'
-import chatModel from '../models/chatModel.js'
-import userModel from '../models/userModel.js'
+import { isAdmin, isNotAuthenticated, isAuthenticated } from '../../Controllers/authMiddleware.js'
+import prodModel from '../../dao/models/prodModels.js'
+import cartModel from '../../dao/models/cartModel.js'
+import chatModel from '../../dao/models/chatModel.js'
+import userModel from '../../dao/models/userModel.js'
 
 const router = Router()
 
