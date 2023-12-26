@@ -1,6 +1,6 @@
 import express from 'express'
 import session from 'express-session'
-import flash from 'express-flash';
+import flash from 'express-flash'
 import http from 'http'
 import passport from './Routing/Router/passport.js'
 import { Server as SocketIOServer } from 'socket.io'

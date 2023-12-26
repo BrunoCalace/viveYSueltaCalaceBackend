@@ -16,6 +16,15 @@ const cartSchema = new mongoose.Schema({
       },
       cantidad: Number
     }
+  ],
+  purchase_failed_products: [
+    {
+      productId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'products',
+      },
+      cantidad: Number,
+    },
   ]
 });
 

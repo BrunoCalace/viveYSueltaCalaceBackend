@@ -1,7 +1,7 @@
-import userModel from '../dao/models/userModel.js'
-import cartModel from '../dao/models/cartModel.js'
+import userModel from '../models/userModel.js'
+import cartModel from '../models/cartModel.js'
 import bcrypt from 'bcrypt'
-import __dirname from '../utils.js'
+import __dirname from '../../utils.js'
 
 class SessionsController {
     static async signup(req, res) {

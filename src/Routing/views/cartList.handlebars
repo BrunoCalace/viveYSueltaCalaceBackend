@@ -22,6 +22,7 @@
     </div>
     <div id="cartId" data-cart-id="{{ cartId }}"></div>
     <button class="btn btn-danger delete-cart" data-cart-id="{{ cartId }}">Vaciar carrito</button>
+    <button class="btn btn-success buy-cart" id="buyCartBtn" data-cart-id="{{ cartId }}">Finalizar compra</button>
 </div>
 
 <script>
@@ -30,6 +31,14 @@
         const cartIdElement = document.getElementById("cartId");
         const cartId = cartIdElement ? cartIdElement.dataset.cartId : null;
 
+        const buyCartBtn = document.getElementById("buyCartBtn");
+        if (buyCartBtn) {
+            buyCartBtn.addEventListener("click", function () {
+                handleBuyCart(cartId);
+            });
+        }
+
+
         document.addEventListener("click", function (event) {
             if (event.target.classList.contains("delete-product")) {
                 handleDeleteProduct(event);
@@ -37,6 +46,26 @@
                 handleDeleteCart();
             }
         });
+
+        function handleBuyCart(cartId) {
+            if (cartId) {
+            fetch(`api/cart/${cartId}/purchase`, {
+                method: "POST",
+            })
+                .then((response) => {
+                if (response.status === 200) {
+                    alert("Compra realizada con éxito");
+                    location.reload();
+                } else {
+                    alert("No se pudo completar la compra");
+                }
+                })
+                .catch((error) => {
+                console.error("Error al realizar la compra:", error);
+                alert("Error al realizar la compra");
+                });
+            }
+        }
 
         function handleDeleteProduct(event) {
             event.preventDefault();

@@ -1,4 +1,4 @@
-import chatModel from '../dao/models/chatModel.js'
+import chatModel from '../models/chatModel.js'
 
 class ChatManager {
     static async addToChat(req, res) {
