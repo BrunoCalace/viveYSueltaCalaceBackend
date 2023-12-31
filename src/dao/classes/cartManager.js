@@ -1,5 +1,7 @@
 import cartModel from "../models/cartModel.js"
 import userModel from "../models/userModel.js"
+import ticketModel from "../models/ticketModel.js"
+import { v4 as uuidv4 } from 'uuid';
 
 class CartManager {
   static async addToCart(req, res) {
@@ -56,7 +58,7 @@ class CartManager {
       const cartId = req.params.cid;
       
       const cart = await cartModel.findById(cartId).populate('products.productId');
-      const user = await userModel.findOne({ cart: cartId }).populate('users.cart')
+      const user = await userModel.findOne({ _id: cart.user }).populate('cart.products.productId');
       
       const ticketProducts = [];
       const failedProducts = [];
@@ -73,23 +75,26 @@ class CartManager {
         }
       }
       
-      await Promise.all(cart.products.map(productInfo => productInfo.productId.save()));
-      
       if (failedProducts.length > 0) {
         cart.purchase_failed_products = failedProducts;
+        console.log(cart.purchase_failed_products);
         await cart.save();
       } else {
+        const ticketCode = uuidv4()
+
         const ticketData = {
+          code: ticketCode,
           amount: calculateTotalAmount(ticketProducts),
           purchaserEmail: user.email,
           purchaser: user.first_name + user.last_name
         };
+        
       
         const newTicket = await ticketModel.create(ticketData);
       
         await cartModel.findByIdAndDelete(cartId);
       
-        res.json({ status: 'success', message: 'Compra exitosa', ticketId: newTicket._id });
+        res.json({ status: 'success', message: 'Compra exitosa', newTicket });
       }
     } catch (error) {
       console.error(error);

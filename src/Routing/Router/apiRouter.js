@@ -23,15 +23,20 @@ router.delete('/products/:id', productManager.deleteProduct)
 //CART
 router.post('/cart/agregar-a-lista', cartManager.addToCart)
 router.delete('/cart/:cid', cartManager.deleteCart)
+router.delete('/cart/:cid/products/:pid', cartManager.deleteProd)
 router.post('/cart/:cid/purchase', cartManager.buyCart, async (req, res) => {
   try {
     const result = await transport.sendMail({
       from: 'bruno.calace@gmail.com',
       to: 'bruno.calace@gmail.com',
-      subject: 'Bruno Calace',
+      subject: `Compra de ${user.first_name} ${user.last_name}`,
       html: `
         <div>
           <h1>Compra</h1>
+          <p>Código: ${newTicket.code}</p>
+          <p>Cliente: ${newTicket.purchaser}</p>
+          <p>Cantidad de productos: ${newTicket.amount}</p>
+          <p>Fecha: ${newTicket.purchase_datetime}</p>
         </div>
       `,
       attachments: []
@@ -41,8 +46,7 @@ router.post('/cart/:cid/purchase', cartManager.buyCart, async (req, res) => {
     console.error('Error al procesar la compra y enviar el correo:', error);
     res.status(500).json({ status: 'error', error: 'Error al procesar la compra y enviar el correo' });
   }
-});
-router.delete('/cart/:cid/products/:pid', cartManager.deleteProd)
+})
 
 //CHAT
 router.post('/chat', chatManager.addToChat)
