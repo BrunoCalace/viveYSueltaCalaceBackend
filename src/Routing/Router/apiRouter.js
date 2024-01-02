@@ -26,10 +26,11 @@ router.delete('/cart/:cid', cartManager.deleteCart)
 router.delete('/cart/:cid/products/:pid', cartManager.deleteProd)
 router.post('/cart/:cid/purchase', cartManager.buyCart, async (req, res) => {
   try {
+    console.log(newTicket)
     const result = await transport.sendMail({
       from: 'bruno.calace@gmail.com',
       to: 'bruno.calace@gmail.com',
-      subject: `Compra de ${user.first_name} ${user.last_name}`,
+      subject: `Compra de ${newTicket.purchaser}`,
       html: `
         <div>
           <h1>Compra</h1>
@@ -41,6 +42,7 @@ router.post('/cart/:cid/purchase', cartManager.buyCart, async (req, res) => {
       `,
       attachments: []
     });
+    console.log(result)
     res.status(200).json({ status: 'success', message: 'Compra exitosa', ticketId: newTicket._id });
   } catch (error) {
     console.error('Error al procesar la compra y enviar el correo:', error);

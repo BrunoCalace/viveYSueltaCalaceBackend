@@ -9,8 +9,8 @@ const prodSchema = new mongoose.Schema({
     },
     description: String,
     code: String,
-    price: String,
-    stock: String,
+    price: Number,
+    stock: Number,
     category: String,
     thumbnails: String,
     status: Boolean

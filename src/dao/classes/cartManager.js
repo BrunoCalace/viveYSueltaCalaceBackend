@@ -1,5 +1,6 @@
 import cartModel from "../models/cartModel.js"
 import userModel from "../models/userModel.js"
+import prodModel from "../models/prodModels.js";
 import ticketModel from "../models/ticketModel.js"
 import { v4 as uuidv4 } from 'uuid';
 
@@ -62,26 +63,44 @@ class CartManager {
       
       const ticketProducts = [];
       const failedProducts = [];
-      
-      for (const productInfo of cart.products) {
+
+      for (const productInfo of cart.products){
         const { productId, cantidad } = productInfo;
-        const product = productId;
-      
+        const product= await prodModel.findOne({ _id: productId })
+
         if (product.stock >= cantidad) {
-          product.stock -= cantidad;
-          ticketProducts.push({ productId, cantidad });
+          product.stock -= cantidad
+          ticketProducts.push({ productId, cantidad })
         } else {
           failedProducts.push({ productId, cantidad });
         }
       }
       
-      if (failedProducts.length > 0) {
+      if (failedProducts.length === 0) {
+        const ticketCode = uuidv4()
+        const ticketData = {
+          code: ticketCode,
+          amount: calculateTotalAmount(ticketProducts),
+          purchaserEmail: user.email,
+          purchaser: user.first_name + user.last_name
+        }
+
+        console.log(ticketData)
+        
+        const newTicket = await ticketModel.create(ticketData);
+      
+        const processedProductIds = ticketProducts.map(ticketInfo => ticketInfo.productId);
+        cart.products = cart.products.filter(productInfo => !processedProductIds.includes(productInfo.productId));
+
+        await cart.save();
+      
+        res.json({ status: 'success', message: 'Compra exitosa', newTicket });
+      } else {
         cart.purchase_failed_products = failedProducts;
         console.log(cart.purchase_failed_products);
         await cart.save();
-      } else {
-        const ticketCode = uuidv4()
 
+        const ticketCode = uuidv4()
         const ticketData = {
           code: ticketCode,
           amount: calculateTotalAmount(ticketProducts),
@@ -89,12 +108,14 @@ class CartManager {
           purchaser: user.first_name + user.last_name
         };
         
-      
         const newTicket = await ticketModel.create(ticketData);
-      
-        await cartModel.findByIdAndDelete(cartId);
-      
-        res.json({ status: 'success', message: 'Compra exitosa', newTicket });
+        
+        const processedProductIds = ticketProducts.map(ticketInfo => ticketInfo.productId);
+        cart.products = cart.products.filter(productInfo => !processedProductIds.includes(productInfo.productId));
+
+        await cart.save();
+    
+        res.json({ status: 'success', message: 'No hay stock de algunos productos', newTicket });
       }
     } catch (error) {
       console.error(error);
@@ -102,7 +123,13 @@ class CartManager {
     }
     
     function calculateTotalAmount(products) {
-      return products.reduce((total, product) => total + product.price * product.cantidad, 0);
+      let total = 0
+
+      for(const productInfo of products){
+        const { cantidad } = productInfo
+        total += cantidad
+      }
+      return total
     }
   }
     
