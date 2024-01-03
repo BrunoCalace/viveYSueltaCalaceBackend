@@ -6,14 +6,6 @@ import productManager from '../../dao/classes/productManager.js'
 import cartManager from '../../dao/classes/cartManager.js'
 import chatManager from '../../dao/classes/chatManager.js'
 
-const transport = nodemailer.createTransport ({
-  service: 'gmail',
-  port: 587,
-  auth: {
-    user: 'bruno.calace@gmail.com',
-    pass: 'unouzhpdqrbggipb'
-  }
-})
 const router = Router()
 
 //PRODUCTS
@@ -24,31 +16,7 @@ router.delete('/products/:id', productManager.deleteProduct)
 router.post('/cart/agregar-a-lista', cartManager.addToCart)
 router.delete('/cart/:cid', cartManager.deleteCart)
 router.delete('/cart/:cid/products/:pid', cartManager.deleteProd)
-router.post('/cart/:cid/purchase', cartManager.buyCart, async (req, res) => {
-  try {
-    console.log(newTicket)
-    const result = await transport.sendMail({
-      from: 'bruno.calace@gmail.com',
-      to: 'bruno.calace@gmail.com',
-      subject: `Compra de ${newTicket.purchaser}`,
-      html: `
-        <div>
-          <h1>Compra</h1>
-          <p>Código: ${newTicket.code}</p>
-          <p>Cliente: ${newTicket.purchaser}</p>
-          <p>Cantidad de productos: ${newTicket.amount}</p>
-          <p>Fecha: ${newTicket.purchase_datetime}</p>
-        </div>
-      `,
-      attachments: []
-    });
-    console.log(result)
-    res.status(200).json({ status: 'success', message: 'Compra exitosa', ticketId: newTicket._id });
-  } catch (error) {
-    console.error('Error al procesar la compra y enviar el correo:', error);
-    res.status(500).json({ status: 'error', error: 'Error al procesar la compra y enviar el correo' });
-  }
-})
+router.post('/cart/:cid/purchase', cartManager.buyCart)
 
 //CHAT
 router.post('/chat', chatManager.addToChat)

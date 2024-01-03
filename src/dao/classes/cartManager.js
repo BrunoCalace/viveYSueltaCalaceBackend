@@ -3,6 +3,7 @@ import userModel from "../models/userModel.js"
 import prodModel from "../models/prodModels.js";
 import ticketModel from "../models/ticketModel.js"
 import { v4 as uuidv4 } from 'uuid';
+import mail from "../utils/mailer.js";
 
 class CartManager {
   static async addToCart(req, res) {
@@ -85,19 +86,16 @@ class CartManager {
           purchaser: user.first_name + user.last_name
         }
 
-        console.log(ticketData)
-        
         const newTicket = await ticketModel.create(ticketData);
-      
         const processedProductIds = ticketProducts.map(ticketInfo => ticketInfo.productId);
         cart.products = cart.products.filter(productInfo => !processedProductIds.includes(productInfo.productId));
 
         await cart.save();
+        mail(newTicket);
       
         res.json({ status: 'success', message: 'Compra exitosa', newTicket });
       } else {
         cart.purchase_failed_products = failedProducts;
-        console.log(cart.purchase_failed_products);
         await cart.save();
 
         const ticketCode = uuidv4()
@@ -109,11 +107,11 @@ class CartManager {
         };
         
         const newTicket = await ticketModel.create(ticketData);
-        
         const processedProductIds = ticketProducts.map(ticketInfo => ticketInfo.productId);
         cart.products = cart.products.filter(productInfo => !processedProductIds.includes(productInfo.productId));
-
+        
         await cart.save();
+        mail(newTicket);
     
         res.json({ status: 'success', message: 'No hay stock de algunos productos', newTicket });
       }
