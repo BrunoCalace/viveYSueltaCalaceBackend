@@ -14,12 +14,13 @@ import { randomBytes } from 'crypto'
 const app = express()
 const server = http.createServer(app)
 const io = new SocketIOServer(server)
-const mongoURL = 'mongodb+srv://brunocalace:QT2q9bemAvh5n658@clustercalace.yrqgvm7.mongodb.net/'
-const mongoDBName = 'ecommerce'
-const secureKey = randomBytes(64).toString('hex')
+const mongoURL = process.env.MONGO_URL
+const mongoDBName = process.env.MONGO_DB_NAME || 'ecommerce';
+const sessionSecret = process.env.SESSION_SECRET || randomBytes(64).toString('hex');
+const PORT = process.env.PORT || 8080;
 
 app.use(session({
-  secret: secureKey,
+  secret: sessionSecret,
   resave: false,
   saveUninitialized: true,
 }))
@@ -42,7 +43,6 @@ app.get('/health', (req, res) => res.send('ok'))
 app.use('/', viewsRouter)
 app.use('/api', apiRouter)
 
-const PORT = process.env.PORT || 8080;
 server.listen(PORT, () => {
   console.log(`Servidor en ejecución en el puerto ${PORT}`);
   
