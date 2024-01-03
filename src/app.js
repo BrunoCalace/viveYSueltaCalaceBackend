@@ -1,3 +1,4 @@
+import dotenv from 'dotenv'
 import express from 'express'
 import session from 'express-session'
 import flash from 'express-flash'
@@ -10,6 +11,10 @@ import handlebars from 'express-handlebars'
 import mongoose from 'mongoose'
 import __dirname from './utils.js'
 import { randomBytes } from 'crypto'
+import { addLogger } from './dao/utils/logger.js'
+
+
+dotenv.config()
 
 const app = express()
 const server = http.createServer(app)
@@ -24,6 +29,8 @@ app.use(session({
   resave: false,
   saveUninitialized: true,
 }))
+
+app.use(addLogger)
 
 app.use(flash())
 
@@ -55,4 +62,4 @@ server.listen(PORT, () => {
       });
 });
 
-export default secureKey;
+export default sessionSecret;

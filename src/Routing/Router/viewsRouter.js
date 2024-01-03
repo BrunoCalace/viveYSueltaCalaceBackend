@@ -4,6 +4,7 @@ import prodModel from '../../dao/models/prodModels.js'
 import cartModel from '../../dao/models/cartModel.js'
 import chatModel from '../../dao/models/chatModel.js'
 import userModel from '../../dao/models/userModel.js'
+import { logger } from '../../dao/utils/logger.js'
 
 const router = Router()
 
@@ -154,5 +155,23 @@ router.get('/profile', isAuthenticated, async (req, res) => {
         res.render('error', { error: 'Error al obtener datos del usuario' });
     }
 });
+
+//loggerTest
+router.get('/loggerTester', async (req, res) => {
+    try {
+        // Simulación de una operación exitosa
+        logger.info('Operación exitosa: ');
+
+        // Simulación de un error
+        throw new Error('Este es un mensaje de error para probar el logger.');
+
+    } catch (error) {
+        // Registra el error en el logger
+        logger.error(`Error en /loggerTester: ${error.message}`);
+
+        // Envía una respuesta al cliente indicando que ocurrió un error
+        res.status(500).json({ status: 'error', message: 'Ocurrió un error en /loggerTester' });
+    }
+})
 
 export default router
