@@ -151,7 +151,6 @@ router.get('/profile', isAuthenticated, async (req, res) => {
     
         res.render('profile', { user });
     }catch (error) {
-        console.error('Error al obtener datos del usuario:', error);
         res.render('error', { error: 'Error al obtener datos del usuario' });
     }
 });

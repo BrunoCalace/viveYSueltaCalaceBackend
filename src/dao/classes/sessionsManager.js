@@ -20,8 +20,7 @@ class SessionsController {
           
             res.redirect('/');
           } catch (error) {
-              console.error('Error al crear usuario:', error);
-              res.render('error', { error: 'Error al crear usuario' });
+            res.render('error', { error: 'Error al crear usuario' });
           }
     }
 
@@ -55,7 +54,6 @@ class SessionsController {
             await user.save();
             return res.redirect('/products');
         } catch (error) {
-            console.error('Error al iniciar sesión:', error);
             res.status(500).json({ error: 'Error al iniciar sesión' });
         }
     }

@@ -1,5 +1,4 @@
 import { Router } from "express"
-import nodemailer from 'nodemailer'
 import passport from './passport.js'
 import sessionsController from '../../dao/classes/sessionsManager.js'
 import productManager from '../../dao/classes/productManager.js'

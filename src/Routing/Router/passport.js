@@ -41,11 +41,9 @@ const generateAccessToken = (user) => {
         callbackURL: 'http://localhost:8080/api/sessions/githubcallback',
       },
       async (accessToken, refreshToken, profile, done) => {
-        console.log(profile);
         try {
           const user = await userModel.findOne({email: profile._json.email})
           if (user) {
-            console.log('The user already exist');
             return done(null, user);
           }
           let name = profile._json.name.split(' ')

@@ -12,6 +12,7 @@ import mongoose from 'mongoose'
 import __dirname from './utils.js'
 import { randomBytes } from 'crypto'
 import { addLogger } from './dao/utils/logger.js'
+import { logger } from './dao/utils/logger.js'
 
 
 dotenv.config()
@@ -51,14 +52,14 @@ app.use('/', viewsRouter)
 app.use('/api', apiRouter)
 
 server.listen(PORT, () => {
-  console.log(`Servidor en ejecución en el puerto ${PORT}`);
+  logger.info(`Servidor en ejecución en el puerto ${PORT}`);
   
   mongoose.connect(mongoURL, { dbName: mongoDBName })
       .then(() => {
-          console.log('DB connected')
+        logger.info('DB connected');
       })
       .catch(error => {
-          console.error('Error connect DB')
+        logger.error(`Error connect DB: ${error.message}`);
       });
 });
 

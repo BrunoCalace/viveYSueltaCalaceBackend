@@ -50,7 +50,6 @@ class CartManager {
         res.status(404).json({ status: 'error', message: 'Carrito no encontrado' });
       }
     } catch (error) {
-      console.error(error);
       res.status(500).json({ status: 'error', error: 'Error al eliminar el carrito' });
     }
   }
@@ -116,7 +115,6 @@ class CartManager {
         res.json({ status: 'success', message: 'No hay stock de algunos productos', newTicket });
       }
     } catch (error) {
-      console.error(error);
       res.status(500).json({ status: 'error', error: 'Error al realizar la compra' });
     }
     
@@ -147,7 +145,6 @@ class CartManager {
         res.status(404).json({ status: 'error', message: 'Producto no encontrado en el carrito' });
       }
     } catch (error) {
-      console.error(error);
       res.status(500).json({ status: 'error', error: 'Error al eliminar el producto del carrito' });
     }
   }
