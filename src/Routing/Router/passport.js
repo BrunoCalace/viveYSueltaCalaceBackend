@@ -2,7 +2,7 @@ import passport from 'passport'
 import { Strategy as LocalStrategy } from 'passport-local'
 import { Strategy as GitHubStrategy } from 'passport-github'
 import jwt from 'jsonwebtoken'
-import userModel from '../../dao/models/userModel.js'
+import userModel from '../../models/userModel.js'
 import bcrypt from 'bcrypt'
 import secureKey from '../../app.js'
 

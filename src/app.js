@@ -9,10 +9,10 @@ import viewsRouter from './Routing/Router/viewsRouter.js'
 import apiRouter from './Routing/Router/apiRouter.js'
 import handlebars from 'express-handlebars'
 import mongoose from 'mongoose'
-import __dirname from './utils.js'
+import __dirname from './dirname.js'
 import { randomBytes } from 'crypto'
-import { addLogger } from './dao/utils/logger.js'
-import { logger } from './dao/utils/logger.js'
+import { addLogger } from './utils/logger.js'
+import { logger } from './utils/logger.js'
 
 
 dotenv.config()

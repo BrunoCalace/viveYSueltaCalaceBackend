@@ -1,9 +1,9 @@
 import { Router } from "express"
 import passport from './passport.js'
-import sessionsController from '../../dao/classes/sessionsManager.js'
-import productManager from '../../dao/classes/productManager.js'
-import cartManager from '../../dao/classes/cartManager.js'
-import chatManager from '../../dao/classes/chatManager.js'
+import sessionsController from '../../Controllers/sessionsManager.js'
+import productManager from '../../Controllers/productManager.js'
+import cartManager from '../../Controllers/cartManager.js'
+import chatManager from '../../Controllers/chatManager.js'
 
 const router = Router()
 

@@ -1,7 +1,7 @@
 import userModel from '../models/userModel.js'
 import cartModel from '../models/cartModel.js'
 import bcrypt from 'bcrypt'
-import __dirname from '../../utils.js'
+import __dirname from '../dirname.js'
 
 class SessionsController {
     static async signup(req, res) {
