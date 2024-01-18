@@ -71,6 +71,14 @@ class SessionsController {
             res.render('error', { error: 'Error al cerrar sesión' });
         }
     }
+
+    static recoverPass(req, res) {
+        try {
+            
+        } catch (error) {
+            
+        }
+    }
 }
 
 export default SessionsController

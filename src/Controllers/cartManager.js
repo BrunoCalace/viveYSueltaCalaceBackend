@@ -3,7 +3,7 @@ import userModel from "../models/userModel.js"
 import prodModel from "../models/prodModels.js";
 import ticketModel from "../models/ticketModel.js"
 import { v4 as uuidv4 } from 'uuid';
-import mail from "../utils/mailer.js";
+import mailCart from "../utils/mailerCart.js";
 
 class CartManager {
   static async addToCart(req, res) {

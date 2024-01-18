@@ -27,6 +27,14 @@ export function isAdmin(req, res, next) {
       res.redirect('/products');
   }
 }
+
+export function isPremium(req, res, next) {
+  if (req.session && req.session.userRole === 'premium') {
+      next();
+  } else {
+      res.redirect('/products');
+  }
+}
   
 export function isNotAuthenticated(req, res, next) {
     if (!req.session || !req.session.userId) {

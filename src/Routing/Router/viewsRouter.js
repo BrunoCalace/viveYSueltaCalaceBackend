@@ -155,6 +155,11 @@ router.get('/profile', isAuthenticated, async (req, res) => {
     }
 });
 
+//RECOVER
+router.get('/recoverPass', async (req, res) => {
+    res.render('recoverPass')
+})
+
 //loggerTest
 router.get('/loggerTester', async (req, res) => {
     try {

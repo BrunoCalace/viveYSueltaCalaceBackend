@@ -9,20 +9,16 @@ const transport = nodemailer.createTransport ({
     }
 })
 
-const mail = (newTicket) => transport.sendMail({
+const mailPass = (user) => transport.sendMail({
     from: 'bruno.calace@gmail.com',
     to: 'bruno.calace@gmail.com',
-    subject: `Compra de ${newTicket.purchaser}`,
+    subject: `Cuenta VyS - Password Recovery`,
     html: `
       <div>
-        <h1>Compra</h1>
-        <p>Código: ${newTicket.code}</p>
-        <p>Cliente: ${newTicket.purchaser}</p>
-        <p>Cantidad de productos: ${newTicket.amount}</p>
-        <p>Fecha: ${newTicket.purchase_datetime}</p>
+        <a href='#'>Haga click aquí para recuperar su contraseña</a>
       </div>
     `,
     attachments: []
 })
 
-export default mail
+export default mailPass
