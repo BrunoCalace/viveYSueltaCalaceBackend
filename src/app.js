@@ -3,10 +3,14 @@ import express from 'express'
 import session from 'express-session'
 import flash from 'express-flash'
 import http from 'http'
-import passport from './Routing/Router/passport.js'
-import { Server as SocketIOServer } from 'socket.io'
-import viewsRouter from './Routing/Router/viewsRouter.js'
-import apiRouter from './Routing/Router/apiRouter.js'
+import passport from './routes/passport.js'
+import viewsRouter from './routes/views.routes.js'
+import prodRouter from './routes/prod.routes.js'
+import cartRouter from './routes/cart.routes.js'
+import chatRouter from './routes/chat.routes.js'
+import sessionsRouter from './routes/sessions.routes.js'
+import recoverRouter from './routes/recover.routes.js'
+import changeRouter from './routes/change.routes.js'
 import handlebars from 'express-handlebars'
 import mongoose from 'mongoose'
 import __dirname from './dirname.js'
@@ -19,7 +23,6 @@ dotenv.config()
 
 const app = express()
 const server = http.createServer(app)
-const io = new SocketIOServer(server)
 const mongoURL = process.env.MONGO_URL
 const mongoDBName = process.env.MONGO_DB_NAME || 'ecommerce';
 const sessionSecret = process.env.SESSION_SECRET || randomBytes(64).toString('hex');
@@ -44,12 +47,17 @@ app.use(express.urlencoded({extended: true}))
 app.use(express.static(__dirname + '/public'))
 
 app.engine('handlebars', handlebars.engine())
-app.set('views', __dirname + '/Routing/views')
+app.set('views', __dirname + '/views')
 app.set('view engine', 'handlebars')
 
 app.get('/health', (req, res) => res.send('ok'))
 app.use('/', viewsRouter)
-app.use('/api', apiRouter)
+app.use('/api/products', prodRouter)
+app.use('/api/cart', cartRouter)
+app.use('/api/chat', chatRouter)
+app.use('/api/recoverPass', recoverRouter)
+app.use('/api/changePass', changeRouter)
+app.use('/api', sessionsRouter)
 
 server.listen(PORT, () => {
   logger.info(`Servidor en ejecución en el puerto ${PORT}`);

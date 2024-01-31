@@ -1,4 +1,4 @@
-import prodModel from "../models/prodModels.js"
+import prodModel from "../DAO/mongo/models/prodModel.js"
 
 class ProductManager {
     static async addToList(req, res) {

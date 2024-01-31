@@ -1,9 +1,9 @@
-import cartModel from "../models/cartModel.js"
-import userModel from "../models/userModel.js"
-import prodModel from "../models/prodModels.js";
-import ticketModel from "../models/ticketModel.js"
-import { v4 as uuidv4 } from 'uuid';
-import mailCart from "../utils/mailerCart.js";
+import cartModel from "../DAO/mongo/models/cartModel.js"
+import userModel from "../DAO/mongo/models/userModel.js"
+import prodModel from "../DAO/mongo/models/prodModel.js"
+import ticketModel from "../DAO/mongo/models/ticketModel.js"
+import { v4 as uuidv4 } from 'uuid'
+import mail from "../utils/mailerCart.js"
 
 class CartManager {
   static async addToCart(req, res) {

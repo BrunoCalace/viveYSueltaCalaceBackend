@@ -1,4 +1,5 @@
 import mongoose from 'mongoose'
+import bcrypt from 'bcrypt'
 
 const { Schema } = mongoose
 const usersCollection = 'users'
@@ -18,6 +19,12 @@ const userSchema = new mongoose.Schema({
         default: 'usuario',
     },
 })
+
+userSchema.methods.changePassword = async function(newPassword) {
+    const hashedPassword = await bcrypt.hash(newPassword, 10)
+    this.password = hashedPassword
+    await this.save()
+};
 
 const userModel = mongoose.model(usersCollection, userSchema)
 

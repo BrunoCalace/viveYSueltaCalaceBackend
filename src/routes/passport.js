@@ -2,9 +2,9 @@ import passport from 'passport'
 import { Strategy as LocalStrategy } from 'passport-local'
 import { Strategy as GitHubStrategy } from 'passport-github'
 import jwt from 'jsonwebtoken'
-import userModel from '../../models/userModel.js'
+import userModel from '../DAO/mongo/models/userModel.js'
 import bcrypt from 'bcrypt'
-import secureKey from '../../app.js'
+import secureKey from '../app.js'
 
 const generateAccessToken = (user) => {
     return jwt.sign({ userId: user._id, email: user.email }, secureKey, { expiresIn: '1h' });

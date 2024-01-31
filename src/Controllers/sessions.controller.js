@@ -1,5 +1,5 @@
-import userModel from '../models/userModel.js'
-import cartModel from '../models/cartModel.js'
+import userModel from '../DAO/mongo/models/userModel.js'
+import cartModel from '../DAO/mongo/models/cartModel.js'
 import bcrypt from 'bcrypt'
 import __dirname from '../dirname.js'
 
