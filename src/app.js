@@ -13,6 +13,8 @@ import recoverRouter from './routes/recover.routes.js'
 import changeRouter from './routes/change.routes.js'
 import handlebars from 'express-handlebars'
 import mongoose from 'mongoose'
+import swaggerUi from 'swagger-ui-express'
+import swaggerSpec from './config/swaggerConfig.js'
 import __dirname from './dirname.js'
 import { randomBytes } from 'crypto'
 import { addLogger } from './utils/logger.js'
@@ -58,6 +60,7 @@ app.use('/api/chat', chatRouter)
 app.use('/api/recoverPass', recoverRouter)
 app.use('/api/changePass', changeRouter)
 app.use('/api', sessionsRouter)
+app.use('/apidocs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, { explorer: true }))
 
 server.listen(PORT, () => {
   logger.info(`Servidor en ejecución en el puerto ${PORT}`);

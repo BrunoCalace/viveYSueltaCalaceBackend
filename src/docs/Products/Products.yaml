@@ -1,0 +1,177 @@
+paths:
+  /products:
+    get:
+      summary: Obtiente y lista todos los productos con un límite de 10
+      tags:
+        Products
+        View
+      responses:
+        "200":
+          description: los productos fueron obtenidos satisfactoriamente de la base de datos.
+          content:
+            application/json:
+              example:
+                - title: 'Producto 1'
+                  description: 'Descripción del Producto 1'
+                  code: 'P1'
+                  price: 10.0
+                  stock: 100
+                  category: 'Electrónicos'
+                  owner: 'admin'
+                  thumbnails: 'url-imagen-1'
+                  status: true
+                - title: 'Producto 2'
+                  description: 'Descripción del Producto 2'
+                  code: 'P2'
+                  price: 15.0
+                  stock: 150
+                  category: 'Ropa'
+                  owner: 'admin'
+                  thumbnails: 'url-imagen-2'
+                  status: true 
+
+        "500":
+          description: Error interno del servidor.
+  
+  /products/:name:
+    get:
+      summary: Obtiente un solo producta en base al nombre
+      tags:
+        Products
+        View
+      responses:
+        "200":
+          description: Producto encontrado satisfactoriamente en la base de datos.
+          content:
+            application/json:
+              example:
+                - title: 'Producto 1'
+                  description: 'Descripción del Producto 1'
+                  code: 'P1'
+                  price: 10.0
+                  stock: 100
+                  category: 'Electrónicos'
+                  owner: 'admin'
+                  thumbnails: 'url-imagen-1'
+                  status: true
+
+        "500":
+          description: Error interno del servidor.
+
+  /products/create:
+    get:
+      summary: Muestra interfaz para crear un producto desde la página.
+      tags:
+        Products
+        View
+      responses:
+        "200":
+          description: Producto creado satisfactoriamente en la base de datos.
+          content:
+            application/json:
+              example:
+                - title: 'Producto 1'
+                  description: 'Descripción del Producto 1'
+                  code: 'P1'
+                  price: 10.0
+                  stock: 100
+                  category: 'Electrónicos'
+                  owner: 'admin'
+                  thumbnails: 'url-imagen-1'
+                  status: true
+
+        "500":
+          description: Error interno del servidor.
+
+  /api/products:
+    post:
+      summary: Crea un producto en la base de datos obteniendo los datos del mismo desde el formulario de la view.
+      tags:
+        Products
+        Controller
+      responses:
+        "200":
+          description: Producto creado satisfactoriamente en la base de datos.
+          content:
+            application/json:
+              example:
+                - title: 'Producto 1'
+                  description: 'Descripción del Producto 1'
+                  code: 'P1'
+                  price: 10.0
+                  stock: 100
+                  category: 'Electrónicos'
+                  owner: 'admin'
+                  thumbnails: 'url-imagen-1'
+                  status: true
+
+        "500":
+          description: Error interno del servidor.
+
+  /api/products/:id:
+    delete:
+      summary: Elimina un producto en la base de datos mediante su ID.
+      tags:
+        Products
+        Controller
+      responses:
+        "200":
+          description: Producto eliminado satisfactoriamente de la base de datos.
+          content:
+            application/json:
+              example:
+                - title: 'Producto 1'
+                  description: 'Descripción del Producto 1'
+                  code: 'P1'
+                  price: 10.0
+                  stock: 100
+                  category: 'Electrónicos'
+                  owner: 'admin'
+                  thumbnails: 'url-imagen-1'
+                  status: true
+
+        "500":
+          description: Error interno del servidor.
+
+components:
+  schemas:
+    Product:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Título del producto.
+        description:
+          type: string
+          description: Descripción del producto.
+        code:
+          type: string
+          description: Código del producto.
+        price:
+          type: number
+          description: Precio del producto.
+        stock:
+          type: integer
+          description: Stock disponible.
+        category:
+          type: string
+          description: Categoría del producto.
+        owner:
+          type: string
+          description: Propietario del producto.
+        thumbnails:
+          type: string
+          description: URL de la imagen del producto.
+        status:
+          type: boolean
+          description: Estado del producto (activo/inactivo).
+      example:
+        title: 'Producto de Ejemplo'
+        description: 'Descripción del Producto de Ejemplo'
+        code: 'PE'
+        price: 10.0
+        stock: 100
+        category: 'Electrónicos'
+        owner: 'admin'
+        thumbnails: 'url-imagen-ejemplo'
+        status: true

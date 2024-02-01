@@ -16,10 +16,10 @@ class RecoverManager {
 
             await mail(user)
 
-            res.status(200).json({ status: 'success', message: 'Correo de recuperación enviado con éxito' });
+            res.redirect('/?status=success');
         } catch (error) {
             console.error('Error al enviar el correo de recuperación:', error);
-            res.status(500).json({ status: 'error', message: 'Error interno del servidor al enviar el correo de recuperación' });
+            res.redirect('/?status=error');
         }
     }
 
@@ -42,10 +42,10 @@ class RecoverManager {
 
             await user.changePassword(newPassword);
 
-            res.status(200).json({ status: 'success', message: 'Contraseña cambiada con éxito' });
+            res.redirect('/?status=success&message=Contraseña cambiada con éxito');
         } catch (error) {
             console.error('Error al cambiar la contraseña:', error);
-            res.status(500).json({ status: 'error', message: 'Error interno del servidor al cambiar la contraseña' });
+            res.redirect('/?status=error&message=Error interno del servidor al cambiar la contraseña');
         }
     }
 }
