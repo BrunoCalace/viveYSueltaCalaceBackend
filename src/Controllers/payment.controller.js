@@ -21,8 +21,8 @@ export const createSession = async (req, res) => {
                 }
             ],
             mode: 'payment',
-            success_url: 'http://localhost:8080/payments/success',
-            cancel_url: 'http://localhost:8080/payments/cancel',
+            success_url: 'https://viveysueltacalacebackend-production.up.railway.app/payments/success',
+            cancel_url: 'https://viveysueltacalacebackend-production.up.railway.app/payments/cancel',
         });
 
         const url = session.url;
