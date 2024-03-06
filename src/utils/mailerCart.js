@@ -19,6 +19,7 @@ const mailCart = (newTicket) => transport.sendMail({
         <p>Código: ${newTicket.code}</p>
         <p>Cliente: ${newTicket.purchaser}</p>
         <p>Cantidad de productos: ${newTicket.amount}</p>
+        <p>Total pagado: $ ${newTicket.total}</p>
         <p>Fecha: ${newTicket.purchase_datetime}</p>
       </div>
     `,

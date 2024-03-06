@@ -18,6 +18,10 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: 'usuario',
     },
+    lastActivityDate: {
+        type: Date,
+        default: Date.now
+    }
 })
 
 userSchema.methods.changePassword = async function(newPassword) {

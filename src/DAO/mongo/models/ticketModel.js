@@ -15,6 +15,7 @@ const ticketSchema = new mongoose.Schema({
   },
   amount: Number,
   purchaser: String,
+  total: Number,
 });
 
 const ticketModel = mongoose.model(ticketCollection, ticketSchema);

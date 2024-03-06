@@ -7,16 +7,21 @@ export function authenticateToken(req, res, next) {
   jwt.verify(token, 'tu_secreto_secreto', (err, user) => {
     if (err) return res.status(403).json({ error: 'Token inválido' });
 
-    req.user = user;
-    next();
-  });
-};
+    req.user = user
+    next()
+  })
+}
 
 export function isAuthenticated(req, res, next) {
     if (req.session && req.session.userId) {
-      next();
+      res.locals.user = {
+        userId: req.session.userId,
+        userRole: req.session.userRole,
+        userMail: req.session.userMail
+      }
+      next()
     } else {
-      res.redirect('/');
+      res.redirect('/')
     }
 }
 

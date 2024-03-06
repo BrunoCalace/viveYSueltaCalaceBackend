@@ -11,6 +11,8 @@ import chatRouter from './routes/chat.routes.js'
 import sessionsRouter from './routes/sessions.routes.js'
 import recoverRouter from './routes/recover.routes.js'
 import changeRouter from './routes/change.routes.js'
+import usersRouter from './routes/users.routes.js'
+import paymentsRouter from './routes/payments.routes.js'
 import handlebars from 'express-handlebars'
 import mongoose from 'mongoose'
 import swaggerUi from 'swagger-ui-express'
@@ -19,7 +21,6 @@ import __dirname from './dirname.js'
 import { randomBytes } from 'crypto'
 import { addLogger } from './utils/logger.js'
 import { logger } from './utils/logger.js'
-
 
 dotenv.config()
 
@@ -59,6 +60,8 @@ app.use('/api/cart', cartRouter)
 app.use('/api/chat', chatRouter)
 app.use('/api/recoverPass', recoverRouter)
 app.use('/api/changePass', changeRouter)
+app.use('/api/users', usersRouter)
+app.use('/payments', paymentsRouter)
 app.use('/api', sessionsRouter)
 app.use('/apidocs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, { explorer: true }))
 

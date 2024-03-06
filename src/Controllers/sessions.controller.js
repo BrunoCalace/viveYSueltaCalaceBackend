@@ -26,23 +26,26 @@ class SessionsController {
 
     static async login(req, res) {
         try {
-            const { email, password } = req.body;
-            const user = await userModel.findOne({ email });
+            const { email, password } = req.body
+            const user = await userModel.findOne({ email })
     
             if (!user) {
-                return res.redirect('/');
+                return res.redirect('/')
             }
     
-            const passwordMatch = user.password ? await bcrypt.compare(password, user.password) : false;
+            const passwordMatch = user.password ? await bcrypt.compare(password, user.password) : false
     
             if (!passwordMatch) {
-                return res.redirect('/');
+                return res.redirect('/')
             }
+
+            user.lastActivityDate = new Date()
+            await user.save()
 
             req.session.userId = user._id;
             req.session.userRole = user.role;
 
-            let userCart = await cartModel.findOne({ user: user._id });
+            let userCart = await cartModel.findOne({ user: user._id })
             if (!userCart) {
                 userCart = await cartModel.create({
                   user: user._id,
@@ -52,9 +55,9 @@ class SessionsController {
             
             user.cart = userCart._id;
             await user.save();
-            return res.redirect('/products');
+            return res.redirect('/products')
         } catch (error) {
-            res.status(500).json({ error: 'Error al iniciar sesión' });
+            res.status(500).json({ error: 'Error al iniciar sesión' })
         }
     }
 
@@ -69,14 +72,6 @@ class SessionsController {
             return res.redirect('/')
         } catch (error) {
             res.render('error', { error: 'Error al cerrar sesión' });
-        }
-    }
-
-    static recoverPass(req, res) {
-        try {
-            
-        } catch (error) {
-            
         }
     }
 }

@@ -25,7 +25,7 @@ const cartSchema = new mongoose.Schema({
       },
       cantidad: Number,
     },
-  ]
+  ],
 });
 
 const cartModel = mongoose.model(cartCollection, cartSchema)

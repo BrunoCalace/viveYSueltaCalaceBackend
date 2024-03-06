@@ -40,22 +40,21 @@
     });
 
     function handleBuyCart(cartId) {
-        console.log("Purchasing cart. Cart ID: ", cartId);
+        console.log("Purchasing cart. Cart ID: ", cartId)
         if (cartId) {
             fetch(`api/cart/${cartId}/purchase`, {
                 method: "POST",
             })
                 .then((response) => {
                     if (response.status === 200) {
-                        alert("Compra realizada con éxito");
-                        location.reload();
+                        window.location.href = 'payments/create-checkout-session'
                     } else {
-                        alert("No se pudo completar la compra");
+                        alert("No se pudo completar la compra")
                     }
                 })
                 .catch((error) => {
-                    console.error("Error al realizar la compra:", error);
-                    alert("Error al realizar la compra");
+                    console.error("Error al realizar la compra:", error)
+                    alert("Error al realizar la compra")
                 });
         }
     }

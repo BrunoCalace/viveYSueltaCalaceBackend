@@ -1,0 +1,74 @@
+<div class="m-4">
+  <h1 class="text-center mb-5">Lista de Usuarios</h1>
+  <div class="d-flex flex-wrap flex-row justify-content-between">
+    {{#each users }}
+      <div class="user-container">
+        <div class="user-details">
+          <p><strong>Nombre:</strong> {{this.first_name}} {{this.last_name}}</p>
+          <p><strong>Email:</strong> {{this.email}}</p>
+          <p><strong>Rol:</strong> {{this.role}}</p>
+        </div>
+        <div class="user-actions">
+          <button class="btn btn-success edit" data-id="{{this._id}}" data-role="usuario">Usuario</button>
+          <button class="btn btn-success edit" data-id="{{this._id}}" data-role="premium">Premium</button>
+          <button class="btn btn-success edit" data-id="{{this._id}}" data-role="admin">Admin</button>
+          <button class="btn btn-danger delete" data-id="{{this._id}}">Borrar Usuario</button>
+        </div>
+      </div>
+    {{/each}}
+  </div>
+  <div class="d-flex justify-content-center mt-5"> <!-- mt-5 para un margen superior de 30px -->
+    <button class="btn btn-danger" id="deleteAll">Borrar Usuarios por inactividad</button>
+  </div>
+</div>
+
+
+<script>
+  document.querySelectorAll('.edit').forEach(button => {
+    button.onclick = (e) => {
+      const id = e.target.getAttribute('data-id')
+      const newRole = e.target.getAttribute('data-role')
+
+      fetch(`/api/users/${id}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ newRole: newRole })
+      })
+        .then(() => {
+          document.location.href = '/users';
+          alert('Rol del usuario cambiado con éxito')
+        })
+        .catch(e => {
+          alert('No se pudo cambiar el rol del usuario')
+        })
+    }
+  });
+
+  document.querySelectorAll('.delete').forEach(button => {
+    button.onclick = (e) => {
+      const id = e.target.getAttribute('data-id')
+
+      fetch(`/api/users/${id}`, { method: 'DELETE'})
+        .then(() => {
+          document.location.href = '/users'
+          alert('Usuario eliminado con éxito')
+        })
+        .catch(e => {
+          alert('No se pudo eliminar al usuario')
+        })
+    }
+  })
+
+  document.querySelector('#deleteAll').onclick = (e) => {
+    fetch(`/api/users`, { method: 'DELETE' })
+      .then(() => {
+        document.location.href = '/users';
+        alert('Usuarios inactivos eliminados con éxito')
+      })
+      .catch(e => {
+        alert('No se pudieron eliminar los usuarios inactivos')
+      })
+  }
+</script>

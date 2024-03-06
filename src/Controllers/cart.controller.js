@@ -2,6 +2,7 @@ import cartModel from "../DAO/mongo/models/cartModel.js"
 import userModel from "../DAO/mongo/models/userModel.js"
 import prodModel from "../DAO/mongo/models/prodModel.js"
 import ticketModel from "../DAO/mongo/models/ticketModel.js"
+import { createSession } from "./payment.controller.js"
 import { v4 as uuidv4 } from 'uuid'
 import mail from "../utils/mailerCart.js"
 
@@ -42,16 +43,19 @@ class CartManager {
     try {
       const cartId = req.params.cid;
       
-      const result = await cartModel.deleteOne({ _id: cartId });
-      
-      if (result.deletedCount === 1) {
-        res.json({ status: 'success', message: 'Carrito eliminado correctamente' });
-      } else {
-        res.status(404).json({ status: 'error', message: 'Carrito no encontrado' });
+      const cart = await cartModel.findById(cartId);
+      if (!cart) {
+          return res.status(404).json({ status: 'error', message: 'Carrito no encontrado' });
       }
-    } catch (error) {
-      res.status(500).json({ status: 'error', error: 'Error al eliminar el carrito' });
-    }
+
+      cart.products = [];
+      
+      await cart.save();
+
+      res.json({ status: 'success', message: 'Carrito vaciado correctamente' });
+  } catch (error) {
+      res.status(500).json({ status: 'error', error: 'Error al vaciar el carrito' });
+  }
   }
 
   static async buyCart(req, res) {
@@ -60,7 +64,7 @@ class CartManager {
       
       const cart = await cartModel.findById(cartId).populate('products.productId');
       const user = await userModel.findOne({ _id: cart.user }).populate('cart.products.productId');
-      
+
       const ticketProducts = [];
       const failedProducts = [];
 
@@ -78,12 +82,14 @@ class CartManager {
       
       if (failedProducts.length === 0) {
         const ticketCode = uuidv4()
+        const totalPay = await calculateTotalPay(ticketProducts)
         const ticketData = {
           code: ticketCode,
           amount: calculateTotalAmount(ticketProducts),
+          total: totalPay,
           purchaserEmail: user.email,
           purchaser: user.first_name + user.last_name
-        }
+        };
 
         const newTicket = await ticketModel.create(ticketData);
         const processedProductIds = ticketProducts.map(ticketInfo => ticketInfo.productId);
@@ -98,24 +104,26 @@ class CartManager {
         await cart.save();
 
         const ticketCode = uuidv4()
+        const totalPay = await calculateTotalPay(ticketProducts)
         const ticketData = {
           code: ticketCode,
           amount: calculateTotalAmount(ticketProducts),
+          total: totalPay,
           purchaserEmail: user.email,
           purchaser: user.first_name + user.last_name
         };
         
-        const newTicket = await ticketModel.create(ticketData);
+        const newTicket = await ticketModel.create(ticketData)
         const processedProductIds = ticketProducts.map(ticketInfo => ticketInfo.productId);
-        cart.products = cart.products.filter(productInfo => !processedProductIds.includes(productInfo.productId));
+        cart.products = cart.products.filter(productInfo => !processedProductIds.includes(productInfo.productId))
         
-        await cart.save();
-        mail(newTicket);
+        await cart.save()
+        mail(newTicket)
     
-        res.json({ status: 'success', message: 'No hay stock de algunos productos', newTicket });
+        res.json({ status: 'success', message: 'Compra exitosa', newTicket });
       }
     } catch (error) {
-      res.status(500).json({ status: 'error', error: 'Error al realizar la compra' });
+      res.status(500).json({ status: 'error', error: 'Error al realizar la compra' })
     }
     
     function calculateTotalAmount(products) {
@@ -126,6 +134,27 @@ class CartManager {
         total += cantidad
       }
       return total
+    }
+
+    async function calculateTotalPay(products) {
+      let total = 0
+
+      try {
+        for (const productInfo of products) {
+          const { cantidad, productId } = productInfo
+          const product = await prodModel.findById(productId)
+    
+          if (product) {
+            total += cantidad * product.price
+          } else {
+            console.error(`No se encontró el producto con ID: ${productId}`)
+          }
+        }
+        return total
+      } catch (error) {
+        console.error('Error al calcular el total de pago:', error)
+        throw error
+      }
     }
   }
     

@@ -81,7 +81,16 @@ class ViewsManager {
     }
 
     static async create(req, res) {
-        res.render('create', {})
+        try {
+            const userId = req.session.userId
+            const user = await userModel.findById(userId)
+            if (!user) {
+                throw new Error('Usuario no encontrado')
+            }
+            res.render('create', { userEmail: user.email })
+        } catch (error) {
+            res.status(500).json({ error: 'Error al obtener el correo electrónico del usuario' })
+        }
     }
 
     static async productOne(req, res) {
@@ -116,7 +125,7 @@ class ViewsManager {
                 };
             }));
     
-            res.render('cartList', { cartId: user.cart, cart: products });
+            res.render('cartList', { cartId: user.cart, cart: products, total: cart.total });
         } catch (error) {
           res.render('error', { error: 'Error al buscar los productos en el carrito' });
         }
@@ -153,6 +162,17 @@ class ViewsManager {
 
     static async changePass(req, res) {
         res.render('changePass')
+    }
+
+    static async users(req, res) {
+        try {
+            const users = await userModel.find().lean().exec()
+
+            res.render('userList', { users })
+          } catch (error) {
+            console.error('Error al obtener usuarios:', error)
+            res.status(500).send('Error interno del servidor')
+          }
     }
 
     static async loggerTester(req, res) {

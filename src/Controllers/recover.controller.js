@@ -16,7 +16,7 @@ class RecoverManager {
 
             await mail(user)
 
-            res.redirect('/?status=success');
+            res.redirect('/')
         } catch (error) {
             console.error('Error al enviar el correo de recuperación:', error);
             res.redirect('/?status=error');
