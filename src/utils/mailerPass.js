@@ -13,7 +13,7 @@ const transport = nodemailer.createTransport ({
 const mailPass = (user) => {
   const token = jwt.sign({ userId: user._id }, 'secreto', { expiresIn: '1h' });
 
-  const resetLink = `http://localhost:8080/changePass/${token}`
+  const resetLink = `https://viveysueltacalacebackend-production.up.railway.app//changePass/${token}`
 
   return transport.sendMail({
     from: 'bruno.calace@gmail.com',
