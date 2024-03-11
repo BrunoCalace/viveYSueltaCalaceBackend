@@ -11,7 +11,7 @@ const transport = nodemailer.createTransport ({
 
 const mailCart = (newTicket) => transport.sendMail({
     from: 'bruno.calace@gmail.com',
-    to: 'bruno.calace@gmail.com',
+    to: newTicket.purchaserEmail,
     subject: `Compra de ${newTicket.purchaser}`,
     html: `
       <div>
